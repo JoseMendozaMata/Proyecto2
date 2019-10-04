@@ -1,8 +1,5 @@
 package Interfaz;
 
-import java.io.File;
-import java.util.List;
-
 import Logica.FileManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,8 +10,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class Interfaz extends Application{

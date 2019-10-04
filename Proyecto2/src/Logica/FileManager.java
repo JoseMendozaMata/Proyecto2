@@ -41,7 +41,7 @@ public class FileManager {
 				
 				int lastIndexOf = name.lastIndexOf(".");
 				
-				String extension = name.substring(lastIndexOf);
+				String extension = name.substring(lastIndexOf);	//Obtengo la extensión del archivo
 				
 				System.out.println(extension);
 				
@@ -73,6 +73,7 @@ public class FileManager {
 	
 	public void addFolder(ListView<String> archives) {
 		
+		//Para seleccionar un directorio a cargar al programa
 		DirectoryChooser dc = new DirectoryChooser();
 		
 		File folder = dc.showDialog(null);
@@ -84,14 +85,22 @@ public class FileManager {
 		}
 		
 	}
-
+	
+	/**
+	 * Elimina elementos de la lista observable
+	 * @param archives: Elementos los cuales quiero eliminar
+	 */
 	public void deleteFile(ListView<String> archives) {
 		
 		//Elimina los elementos de la ListView
 		archives.getItems().removeAll(archives.getSelectionModel().getSelectedItems());
 		
 	}
-
+	
+	/**
+	 * Obtiene el nombre, fecha y tamaño del archivo
+	 * @param files: Archivos a los cuales quiero ver sus propiedades
+	 */
 	public void getProperties(ObservableList<String> files) {
 		
 		for(int i = 0; i < files.size(); i++) {
@@ -103,6 +112,9 @@ public class FileManager {
 			String pattern = "yyyy-MM-dd";
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 			
+			String name = f.getName();
+			System.out.println("The name is: " + name);
+			
 			Date lastModifiedDate = new Date( lastModified );
 
 			System.out.println( "The file " + f + " was last modified on " + simpleDateFormat.format( lastModifiedDate ) );
@@ -113,5 +125,10 @@ public class FileManager {
 		}
 		
 	}
+	
+	/**
+	 * Se encarga de actualizar los archivos cargados al programa
+	 * @param previousList: Lista Observable que contiene los elementos que estaban en la lista
+	 */
 	
 }
