@@ -14,7 +14,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class FileManager {
 
 	/**
-	 * Se encarga de añadir los archivos seleccionados a la lista de la interfaz, además de la lógica del arbol
+	 * Se encarga de aï¿½adir los archivos seleccionados a la lista de la interfaz, ademï¿½s de la lï¿½gica del arbol
 	 * @param archives: ListView encargada de mostrar los elementos cargados en el programa
 	 */
 	
@@ -24,14 +24,15 @@ public class FileManager {
 		
 		System.out.println(archives);
 		
-		fc.getExtensionFilters().addAll(new ExtensionFilter("Todos los archivos","*"),
-										new ExtensionFilter("PDF Files","*pdf"), 
-										new ExtensionFilter("Docx Files","*docx"), 
-										new ExtensionFilter("TXT Files","*txt")
-										);
 		
-		// Lista que contenerá los diferentes archivos que quiera cargar
+		// Lista que contenerï¿½ los diferentes archivos que quiera cargar
 		List<File> selectedFile = fc.showOpenMultipleDialog(null);
+		
+		fc.getExtensionFilters().addAll(new ExtensionFilter("Todos los archivos","*"),
+				new ExtensionFilter("PDF Files","*pdf"), 
+				new ExtensionFilter("Docx Files","*docx"), 
+				new ExtensionFilter("TXT Files","*txt")
+				);
 		
 		if(selectedFile != null) {	//Si hay archivos seleccionados 
 			
@@ -41,16 +42,16 @@ public class FileManager {
 				
 				int lastIndexOf = name.lastIndexOf(".");
 				
-				String extension = name.substring(lastIndexOf);	//Obtengo la extensión del archivo
+				String extension = name.substring(lastIndexOf);	//Obtengo la extensiï¿½n del archivo
 				
 				System.out.println(extension);
 				
-				//Validación de extensión
+				//Validaciï¿½n de extensiï¿½n
 				if(extension.equals(".docx") || extension.equals(".pdf") || extension.equals(".txt")) {
 					
-					//Añadir la vara en la lista de forma visual
+					//Aï¿½adir la vara en la lista de forma visual
 					archives.getItems().add(file.getPath());
-					//Añadir la vara al arbol
+					//Aï¿½adir la vara al arbol
 					
 					
 				} else {
@@ -68,7 +69,7 @@ public class FileManager {
 	}
 	
 	/**
-	 *	Función que se encarga de añadir un folder al programa 
+	 *	Funciï¿½n que se encarga de aï¿½adir un folder al programa 
 	 */
 	
 	public void addFolder(ListView<String> archives) {
@@ -79,7 +80,7 @@ public class FileManager {
 		File folder = dc.showDialog(null);
 		
 		if(folder == null) {
-			System.out.println("No seleccionó un folder para cargar");
+			System.out.println("No seleccionï¿½ un folder para cargar");
 		} else {
 			archives.getItems().add(folder.getPath());
 		}
@@ -98,7 +99,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Obtiene el nombre, fecha y tamaño del archivo
+	 * Obtiene el nombre, fecha y tamaï¿½o del archivo
 	 * @param files: Archivos a los cuales quiero ver sus propiedades
 	 */
 	public void getProperties(ObservableList<String> files) {
