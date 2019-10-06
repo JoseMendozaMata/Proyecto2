@@ -25,10 +25,10 @@ public class FileManager {
 		System.out.println(archives);
 		
 		fc.getExtensionFilters().addAll(new ExtensionFilter("Todos los archivos","*"),
-										new ExtensionFilter("PDF Files","*pdf"), 
-										new ExtensionFilter("Docx Files","*docx"), 
-										new ExtensionFilter("TXT Files","*txt")
-										);
+				new ExtensionFilter("PDF Files","*pdf"), 
+				new ExtensionFilter("Docx Files","*docx"), 
+				new ExtensionFilter("TXT Files","*txt")
+				);
 		
 		// Lista que contenerá los diferentes archivos que quiera cargar
 		List<File> selectedFile = fc.showOpenMultipleDialog(null);
@@ -130,5 +130,11 @@ public class FileManager {
 	 * Se encarga de actualizar los archivos cargados al programa
 	 * @param previousList: Lista Observable que contiene los elementos que estaban en la lista
 	 */
+	
+	public void parse(ObservableList<String> list) {
+		
+		
+		
+	}
 	
 }
