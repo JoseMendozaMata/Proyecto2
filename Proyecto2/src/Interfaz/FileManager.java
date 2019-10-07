@@ -1,35 +1,42 @@
-package Logica;
+package Interfaz;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import Logica.patron.factory.ParserFactory;
+import Logica.patron.parsers.*;
+
+/**
+ * Busca y agrega los archivos a la lista visual con la que puede interactuar 
+ * @author Fatima y Jose
+ *
+ */
 
 public class FileManager {
 
 	/**
-	 * Se encarga de aï¿½adir los archivos seleccionados a la lista de la interfaz, ademï¿½s de la lï¿½gica del arbol
+	 * Se encarga de annadir los archivos seleccionados a la lista de la interfaz, ademas de la logica del arbol
 	 * @param archives: ListView encargada de mostrar los elementos cargados en el programa
 	 */
+	
+	ParserFactory factory = new ParserFactory();
 	
 	public void addAFile(ListView<String> archives) {
 		
 		FileChooser fc = new FileChooser();	// Cuadro de dialogo para abrir los archivos
 		
 		System.out.println(archives);
+
 		
-		PDDocument docu= new PDDocument();
-		
-		
-		// Lista que contenerï¿½ los diferentes archivos que quiera cargar
+		// Lista que contenera los diferentes archivos que quiera cargar
 		List<File> selectedFile = fc.showOpenMultipleDialog(null);
 		
 		fc.getExtensionFilters().addAll(new ExtensionFilter("Todos los archivos","*"),
@@ -73,7 +80,7 @@ public class FileManager {
 	}
 	
 	/**
-	 *	Funciï¿½n que se encarga de aï¿½adir un folder al programa 
+	 *	Funcion que se encarga de annadir un folder al programa 
 	 */
 	
 	public void addFolder(ListView<String> archives) {
@@ -103,7 +110,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Obtiene el nombre, fecha y tamaï¿½o del archivo
+	 * Obtiene el nombre, fecha y tamanno del archivo
 	 * @param files: Archivos a los cuales quiero ver sus propiedades
 	 */
 	public void getProperties(ObservableList<String> files) {
@@ -132,8 +139,44 @@ public class FileManager {
 	}
 	
 	/**
-	 * Se encarga de actualizar los archivos cargados al programa
+	 * Se encarga de parsear los archivos cargados al programa
 	 * @param previousList: Lista Observable que contiene los elementos que estaban en la lista
+	 * @throws IOException 
 	 */
+	
+	public void parse(ObservableList<String> list) throws IOException {
+		
+		for(String url:list) {
+			
+			FileParser Textparser = factory.getParser(this.getExtension(url));
+			
+			String content = Textparser.getText(url);
+			System.out.println(content);
+			
+		}
+		
+	}
+	
+	public ParserId getExtension(String url) {
+		
+		ParserId Pextension = null;
+		
+		int lastIndexOf = url.lastIndexOf(".");
+		
+		String extension = url.substring(lastIndexOf);	//Obtengo la extension del archivo
+		
+		// COnvierto la extensión a un ParserId
+		if(extension.equals(".txt")) {
+			Pextension = ParserId.TXT;
+		}else if(extension.equals(".pdf")) {
+			Pextension = ParserId.PDF;
+		}else if(extension.equals(".docx")) {
+			Pextension = ParserId.DOCX;
+		}else {
+			return null;
+		}
+		
+		return Pextension;
+	}
 	
 }

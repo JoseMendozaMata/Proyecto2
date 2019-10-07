@@ -1,17 +1,27 @@
 package Interfaz;
 
-import Logica.FileManager;
+import java.io.IOException;
+
+import org.apache.pdfbox.pdfparser.PDFParser;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+
+/** Clase la cual se encarga de interactuar con el usuario
+ * @author Jose y Fatima
+ *
+ */
 public class Interfaz extends Application{
 
 	Stage window;
@@ -23,11 +33,17 @@ public class Interfaz extends Application{
 	Pane table;
 	FileManager fileManager;
 	
+	
 	public static void main(String[]args) {
 		
 		launch();
 		
 	}
+	
+	
+	/** 
+	 *  Muestra la ventana e inicializa la ventana
+	 */
 	
 	public void start(Stage primaryStage) throws Exception {
 	
@@ -87,7 +103,17 @@ public class Interfaz extends Application{
 		});
 		search.getChildren().add(viewDate);
 		
-		// ---------------- Se a�aden los elementos para mostrarlos en pantalla ---------------------
+		Button searchButton = new Button("Search");
+		searchButton.setOnAction(e -> {
+			try {
+				fileManager.parse(this.archives.getItems());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		});
+		search.getChildren().add(searchButton);
+		
+		// ---------------- Se annaden los elementos para mostrarlos en pantalla ---------------------
 		
 		
 		table.getChildren().add(new Rectangle(10,10));
