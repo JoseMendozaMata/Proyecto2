@@ -1,5 +1,7 @@
 package Interfaz;
 
+import org.apache.pdfbox.pdfparser.PDFParser;
+
 import Logica.FileManager;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -87,7 +89,7 @@ public class Interfaz extends Application{
 		});
 		search.getChildren().add(viewDate);
 		
-		// ---------------- Se añaden los elementos para mostrarlos en pantalla ---------------------
+		// ---------------- Se aï¿½aden los elementos para mostrarlos en pantalla ---------------------
 		
 		
 		table.getChildren().add(new Rectangle(10,10));
