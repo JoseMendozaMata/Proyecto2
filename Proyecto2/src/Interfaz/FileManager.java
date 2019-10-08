@@ -150,8 +150,16 @@ public class FileManager {
 			
 			FileParser Textparser = factory.getParser(this.getExtension(url));
 			
-			String content = Textparser.getText(url);
-			System.out.println(content);
+			String[] lines = Textparser.getLines(url);
+			
+			for(int i = 0; i < lines.length; i++) {
+				
+				String line = lines[i];
+				
+				System.out.println("Linea " + i + " es: " + line);
+			}
+			
+			System.out.println("===============================================");
 			
 		}
 		
@@ -165,7 +173,7 @@ public class FileManager {
 		
 		String extension = url.substring(lastIndexOf);	//Obtengo la extension del archivo
 		
-		// COnvierto la extensión a un ParserId
+		// COnvierto la extensiï¿½n a un ParserId
 		if(extension.equals(".txt")) {
 			Pextension = ParserId.TXT;
 		}else if(extension.equals(".pdf")) {

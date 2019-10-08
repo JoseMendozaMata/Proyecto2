@@ -20,6 +20,7 @@ public class PDFManager implements FileParser{
 	private String Text;
 	private String filePath;
 	private File file;
+	private String[] lines;
 	
 	/** 
 	 * Metodo que retorna el string Text que es el archivo pdf ya leido
@@ -68,8 +69,51 @@ public class PDFManager implements FileParser{
 		pdfStripper.setStartPage(0);
 		pdfStripper.setEndPage(pdDoc.getNumberOfPages());
 		Text= pdfStripper.getText(pdDoc);
+		
+
 		return Text;
 	}
+	
+	
+	
+	public String[] getLines(String url) {
+		
+		String[] lines;
+		
+		setFilePath(url);
+		
+		try {
+			lines= toLines();
+		}catch(Exception e) {
+			System.out.print(e.getMessage());
+			lines= null;
+		}
+		
+		return lines;
+	}
+	
+	public String[] toLines() throws IOException{
+		
+		this.pdfStripper= null;
+		this.pdDoc= null;
+		this.cosDoc= null;
+		
+		file= new File(filePath);
+		parser= new PDFParser(new RandomAccessFile(file, "r"));
+		parser.parse();
+		cosDoc= parser.getDocument();
+		pdfStripper= new PDFTextStripper();
+		pdDoc= new PDDocument(cosDoc);
+		pdDoc.getNumberOfPages();
+		pdfStripper.setStartPage(0);
+		pdfStripper.setEndPage(pdDoc.getNumberOfPages());
+		Text= pdfStripper.getText(pdDoc);
+		lines= Text.split(System.getProperty("line.separator"));
+		return lines;
+	}
+	
+	
+	
 
 	public void setFilePath(String filePath) {
 		this.filePath= filePath;
@@ -77,6 +121,10 @@ public class PDFManager implements FileParser{
 	
 	public PDDocument getPDDoc() {
 		return pdDoc;
+	}
+	
+	public String getLine(int n) {
+	    return lines[n];
 	}
 	
 	

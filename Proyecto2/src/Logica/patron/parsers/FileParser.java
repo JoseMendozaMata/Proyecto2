@@ -3,8 +3,8 @@ package Logica.patron.parsers;
 import java.io.IOException;
 
 /**
- * Los métodos que podrá ejecutar el parser
- * @author Fátima y José
+ * Los mï¿½todos que podrï¿½ ejecutar el parser
+ * @author Fï¿½tima y Josï¿½
  *
  */
 public interface FileParser {
@@ -14,5 +14,8 @@ public interface FileParser {
 	 * @return String que guarda el contenido del archivo 
 	 * @throws IOException 
 	 */
-	public String getText(String url) throws IOException;		// Obtiene el contenido de los documentos en String	
+	public String getText(String url) throws IOException;		// Obtiene el contenido de los documentos en String
+
+	public String[] getLines(String url);
+	
 }

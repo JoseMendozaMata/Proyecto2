@@ -31,6 +31,12 @@ public class DOCXManager implements FileParser{
 		return text;
 	}
 
+	@Override
+	public String[] getLines(String url) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	
 }

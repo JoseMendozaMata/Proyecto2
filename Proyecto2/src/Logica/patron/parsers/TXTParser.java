@@ -6,7 +6,7 @@ import java.io.FileReader;
 
 /**
  * Parser con los metodos necesarios para obtener los datos del txt
- * @author Jose y Fátima
+ * @author Jose y Fï¿½tima
  *
  */
 public class TXTParser implements FileParser {
@@ -29,7 +29,7 @@ public class TXTParser implements FileParser {
 			
 			// Para obtener el contenido en lineas del txt
 			while((linea = br.readLine()) != null) {
-				text += linea;
+				text += linea + "\n";
 			}
 		
 		} catch (Exception e) {				// Cuando no puede abrir el archivo
@@ -38,6 +38,15 @@ public class TXTParser implements FileParser {
 		}
 		
 		return text;
+	}
+
+	@Override
+	public String[] getLines(String url) {
+		
+		String text = getText(url);
+		String[] lines = text.split("\n");
+		
+		return lines;
 	}
 
 }
