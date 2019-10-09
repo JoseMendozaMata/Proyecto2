@@ -21,11 +21,10 @@ public class DOCXManager implements FileParser{
 		try {
 			docx = new XWPFDocument(new FileInputStream(url));
 			we = new XWPFWordExtractor(docx);
-			System.out.println(we.getText());
 			text = we.getText();
 			
 		}catch(Exception e){
-			System.out.println(e);
+			System.out.println("Error: " + e);
 		}
 		
 		return text;
@@ -33,8 +32,11 @@ public class DOCXManager implements FileParser{
 
 	@Override
 	public String[] getLines(String url) {
-		// TODO Auto-generated method stub
-		return null;
+		String txt= getText(url);
+		String[] lineas;
+		lineas= txt.split(System.getProperty("line.separator"));
+		
+		return lineas;
 	}
 
 	

@@ -146,17 +146,29 @@ public class FileManager {
 	
 	public void parse(ObservableList<String> list) throws IOException {
 		
+		//Obtiene el url del documento
 		for(String url:list) {
 			
 			FileParser Textparser = factory.getParser(this.getExtension(url));
 			
+			//Separa el documento por lineas
 			String[] lines = Textparser.getLines(url);
 			
+			//Obtiene las palabras de cada linea
 			for(int i = 0; i < lines.length; i++) {
 				
 				String line = lines[i];
+				String[] words= line.split(" ");
 				
 				System.out.println("Linea " + i + " es: " + line);
+				System.out.println("-----------------------------------------------");
+				
+				//Obtiene las posiciones de palabras de una linea 
+				for(int j=0; j < words.length; j++) {
+					String word= words[j];
+					System.out.println("La palabra " +j+ " es: " + word);
+					//tree.add
+				}
 			}
 			
 			System.out.println("===============================================");
@@ -165,6 +177,11 @@ public class FileManager {
 		
 	}
 	
+	/**
+	 * Convierte una extension del string a un ParserId
+	 * @param url: es la direccion en donde se encuentra el archivo 
+	 * @return :retorna la extension del tipo de archivo
+	 */
 	public ParserId getExtension(String url) {
 		
 		ParserId Pextension = null;
@@ -173,7 +190,7 @@ public class FileManager {
 		
 		String extension = url.substring(lastIndexOf);	//Obtengo la extension del archivo
 		
-		// COnvierto la extensi�n a un ParserId
+		// COnvierto la extension a un ParserId
 		if(extension.equals(".txt")) {
 			Pextension = ParserId.TXT;
 		}else if(extension.equals(".pdf")) {
