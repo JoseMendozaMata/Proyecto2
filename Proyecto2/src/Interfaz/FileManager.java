@@ -13,6 +13,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import Logica.patron.factory.ParserFactory;
 import Logica.patron.parsers.*;
+import Logica.tree.Tree;
+import Logica.tree.TreeNode;
 
 /**
  * Busca y agrega los archivos a la lista visual con la que puede interactuar 
@@ -28,6 +30,7 @@ public class FileManager {
 	 */
 	
 	ParserFactory factory = new ParserFactory();
+	Tree tree= new Tree();
 	
 	public void addAFile(ListView<String> archives) {
 		
@@ -167,8 +170,20 @@ public class FileManager {
 				for(int j=0; j < words.length; j++) {
 					String word= words[j];
 					System.out.println("La palabra " +j+ " es: " + word);
-					//tree.add
+					
+					//La palabra no existe y se inserta al arbol
+					if(tree.getNode(word)== null) {
+						System.out.println("Anade un elemento al arbol");
+						tree.Insert(word);
+						
+					//La palabra existe en el arbol, se agrega la ocurrencia
+					}else {
+						TreeNode node= tree.getNode(word);
+						//TODO: insertar a lista de ocurrencias
+						System.out.println("Se agrega el nodo a la lista de ocurrencias");
+					}
 				}
+				System.out.println("Tamano del arbol: " + tree.lenght);
 			}
 			
 			System.out.println("===============================================");
