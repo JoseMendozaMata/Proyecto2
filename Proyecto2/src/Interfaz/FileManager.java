@@ -11,6 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import Logica.lista.Lista;
 import Logica.patron.factory.ParserFactory;
 import Logica.patron.parsers.*;
 import Logica.tree.Tree;
@@ -149,6 +150,7 @@ public class FileManager {
 	
 	public void parse(ObservableList<String> list) throws IOException {
 		
+		this.tree= new Tree();
 		//Obtiene el url del documento
 		for(String url:list) {
 			
@@ -175,11 +177,14 @@ public class FileManager {
 					if(tree.getNode(word)== null) {
 						System.out.println("Anade un elemento al arbol");
 						tree.Insert(word);
+						TreeNode node = tree.getNode(word);
+						node.lista.add_Last(url, i);
 						
 					//La palabra existe en el arbol, se agrega la ocurrencia
 					}else {
 						TreeNode node= tree.getNode(word);
-						//TODO: insertar a lista de ocurrencias
+
+						node.lista.add_Last(url, i);
 						System.out.println("Se agrega el nodo a la lista de ocurrencias");
 					}
 				}
@@ -217,6 +222,21 @@ public class FileManager {
 		}
 		
 		return Pextension;
+	}
+	
+	public void search(String word, ObservableList<String> ListaArchivos) throws IOException {
+		parse(ListaArchivos); //Se crea el arbol
+		
+		TreeNode nodeW= this.tree.getNode(word);
+		if(nodeW==null) {
+			//Crear la pantallita 
+			System.out.println("No se encontro la palabra");
+		}else {
+			Lista ocurrencias= nodeW.lista;
+			for(int i=0; i< ocurrencias.size; i++) {
+				System.out.println(ocurrencias.getIndex(i).getName());
+			}
+		}
 	}
 	
 }

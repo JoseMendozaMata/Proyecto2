@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -68,6 +69,13 @@ public class Interfaz extends Application{
 		table = new Pane();
 		table.setMinSize(300, 200);
 		
+		// TextField con el que se busca la palabra
+
+		TextField searchField = new TextField();
+		searchField.setPromptText("Buscar");
+		search.getChildren().add(searchField);
+
+		
 		//----------------------------- Buttons --------------------------------------
 		
 		Button addFileButton = new Button("Add New File");
@@ -106,7 +114,7 @@ public class Interfaz extends Application{
 		Button searchButton = new Button("Search");
 		searchButton.setOnAction(e -> {
 			try {
-				fileManager.parse(this.archives.getItems());
+				fileManager.search(searchField.getText(),this.archives.getItems());
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -129,5 +137,7 @@ public class Interfaz extends Application{
 		window.show();
 		
 	}
+	
+	
 
 }
