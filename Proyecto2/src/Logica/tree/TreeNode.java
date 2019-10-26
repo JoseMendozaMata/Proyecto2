@@ -9,10 +9,11 @@ import Logica.lista.Lista;
  *
  */
 public class TreeNode {
-	String word;
+	public String word;
+	
 	public Lista lista;
-	TreeNode right;
-	TreeNode left;
+	public TreeNode right;
+	public TreeNode left;
 	
 	public TreeNode(String word) {
 		this.word=word;

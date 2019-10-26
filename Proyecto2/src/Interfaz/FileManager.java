@@ -12,6 +12,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import Logica.lista.Lista;
+import Logica.lista.ListaNode;
 import Logica.patron.factory.ParserFactory;
 import Logica.patron.parsers.*;
 import Logica.tree.Tree;
@@ -30,8 +31,8 @@ public class FileManager {
 	 * @param archives: ListView encargada de mostrar los elementos cargados en el programa
 	 */
 	
-	ParserFactory factory = new ParserFactory();
-	Tree tree= new Tree();
+	public ParserFactory factory = new ParserFactory();
+	public Tree tree= new Tree();
 	
 	public void addAFile(ListView<String> archives) {
 		
@@ -224,19 +225,35 @@ public class FileManager {
 		return Pextension;
 	}
 	
-	public void search(String word, ObservableList<String> ListaArchivos) throws IOException {
+	public TreeNode search(String word, ObservableList<String> ListaArchivos) throws IOException {
+		
 		parse(ListaArchivos); //Se crea el arbol
 		
-		TreeNode nodeW= this.tree.getNode(word);
+		TreeNode nodeW= this.tree.getNode(word);	// Obtengo el nodo de la palabra buscada
 		if(nodeW==null) {
 			//Crear la pantallita 
 			System.out.println("No se encontro la palabra");
+			return null;
 		}else {
-			Lista ocurrencias= nodeW.lista;
-			for(int i=0; i< ocurrencias.size; i++) {
-				System.out.println(ocurrencias.getIndex(i).getName());
-			}
+			return nodeW;			// Retorno la lista de archivos que contienen la palabra
 		}
 	}
+	
+	
+	
+	/** Obtiene un extracto de la palabra buscada
+	 * @param nodo
+	 * @return
+	 */
+	public String getExtract(ListaNode nodo) {
+		
+		FileParser parser = factory.getParser(this.getExtension(nodo.getUrl()));
+		String[] nodeLines = parser.getLines(nodo.getUrl());
+		String extract = nodeLines[nodo.getLine()];
+		
+		return extract;
+		
+	}
+	
 	
 }

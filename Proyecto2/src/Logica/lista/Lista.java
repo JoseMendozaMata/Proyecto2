@@ -1,11 +1,20 @@
 package Logica.lista;
 
-import java.io.File;
-
 public class Lista {
 	private ListaNode first;
 	private ListaNode last;
 	public int size;
+	
+	public Lista() {
+		this.first=null;
+		this.last=null;
+		this.size=0;
+	}
+	public void initialize() {
+		this.first=null;
+		this.last=null;
+		this.size=0;
+	}
 	
 	public void add_Last(String url, int line) {
 		if(this.first ==null) {

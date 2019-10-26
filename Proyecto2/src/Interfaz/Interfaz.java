@@ -4,9 +4,12 @@ import java.io.IOException;
 
 import org.apache.pdfbox.pdfparser.PDFParser;
 
+import Logica.lista.Lista;
+import Logica.tree.TreeNode;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
@@ -30,10 +33,12 @@ public class Interfaz extends Application{
 	VBox root;
 	HBox search;
 	HBox archivesContainer;
-	ListView<String> archives;
+	ListView<String> archives;		// Biblioteca de la interfaz
+	ListView<String> searchResults;
 	Pane table;
 	FileManager fileManager;
-	
+	Lista ocurrenceSearchList;
+	Algoritmos ordenamiento;
 	
 	public static void main(String[]args) {
 		
@@ -53,7 +58,7 @@ public class Interfaz extends Application{
 		
 		//-------------------- Start Variables ------------------------------------
 		
-		root = new VBox(10);
+		root = new VBox(30);
 		
 		search = new HBox(10);
 		
@@ -69,6 +74,8 @@ public class Interfaz extends Application{
 		table = new Pane();
 		table.setMinSize(300, 200);
 		
+		searchResults = new ListView<>();
+		
 		// TextField con el que se busca la palabra
 
 		TextField searchField = new TextField();
@@ -77,8 +84,10 @@ public class Interfaz extends Application{
 
 		
 		//----------------------------- Buttons --------------------------------------
+		Image addImage= new Image(getClass().getResource("addD.jpeg").toExternalForm());
+		Button addFileButton = new Button();
+		addFileButton.setGraphic(new ImageView(addImage));
 		
-		Button addFileButton = new Button("Add New File");
 		addFileButton.setOnAction(e -> {
 			
 			this.fileManager.addAFile(this.archives);
@@ -114,30 +123,92 @@ public class Interfaz extends Application{
 		Button searchButton = new Button("Search");
 		searchButton.setOnAction(e -> {
 			try {
-				fileManager.search(searchField.getText(),this.archives.getItems());
+				
+				TreeNode result = fileManager.search(searchField.getText(),this.archives.getItems());
+				
+				if(result == null) {	// Si la palabra no existe 
+					
+					System.out.println("La palabra no existe");
+					this.searchResults.getItems().removeAll(searchResults.getItems());
+
+					
+				} else {	// Si la palabra existe, obtengo las ocurrencias y las pongo en una lista
+					
+					this.ocurrenceSearchList = result.lista;
+					makeResultList();
+				}
+				
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 		});
+		
+		//---------------------- ChechBox de las opciones de ordenamiento-----------------------------
+		
+		ChoiceBox<String> ordenar= new ChoiceBox<> ();
+		ordenar.getItems().addAll("Nombre", "Fecha", "Tamaño"); //Se inserta las opciones de la choiceBox
+		ordenar.setValue("Nombre");
+		
+		ordenamiento= new Algoritmos(); //Se inicializa el atributo de la clase
+		Button revChoice= new Button("Ordenar");
+		
+		revChoice.setOnAction(e -> {
+				ordenamiento.ordenar(ordenar, ocurrenceSearchList, searchResults);
+				makeResultList();
+				}
+				);	
+				
 		search.getChildren().add(searchButton);
+		
+		
 		
 		// ---------------- Se annaden los elementos para mostrarlos en pantalla ---------------------
 		
-		
-		table.getChildren().add(new Rectangle(10,10));
+		table.getChildren().add(searchResults);
 		
 		archivesContainer.getChildren().add(archives);
-		archivesContainer.getChildren().add(table);
+		archivesContainer.getChildren().addAll(table, ordenar, revChoice);
 		
 		root.getChildren().addAll(search, archivesContainer);
 		
-		scene = new Scene(root);
+		scene = new Scene(root, 900,600);
 		
 		window.setScene(scene);
 		window.show();
 		
 	}
 	
+	/**
+	 * Se encarga de annadir los files en la lista de resultados de busqueda 
+	 */
+	public void makeResultList() {
+		
+		if(this.searchResults.getItems().isEmpty()) {
+			
+			System.out.println("esta vacia");
+			
+		}else {
+		
+			this.searchResults.getItems().removeAll(searchResults.getItems());
+		
+		}
+			System.out.println("-------------------------------------------");
+			for(int i = 0; i < ocurrenceSearchList.size; i++) {
+
+				System.out.println(ocurrenceSearchList.getIndex(i).getName());
+				searchResults.getItems().add(ocurrenceSearchList.getIndex(i).getName());
+
+			}
+		
+	}
+	
+	public void ButtonDesign() {
+		
+	}
+	
+}
 	
 
-}
+	
+	
+
