@@ -31,14 +31,15 @@ public class Interfaz extends Application{
 	Stage window;
 	Scene scene;
 	VBox root;
-	HBox search;
-	HBox archivesContainer;
+	
+	Pane archivesContainer;
 	ListView<String> archives;		// Biblioteca de la interfaz
 	ListView<String> searchResults;
 	Pane table;
 	FileManager fileManager;
 	Lista ocurrenceSearchList;
 	Algoritmos ordenamiento;
+	Pane first;
 	
 	public static void main(String[]args) {
 		
@@ -58,18 +59,20 @@ public class Interfaz extends Application{
 		
 		//-------------------- Start Variables ------------------------------------
 		
-		root = new VBox(30);
+		root = new VBox();
 		
-		search = new HBox(10);
+		first= new Pane();
+		first.setMinSize(900, 110);
 		
 		fileManager = new FileManager();
+		archivesContainer = new Pane();
 		
 		archives = new ListView<String>();
 		archives.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		
-		archivesContainer = new HBox(10);
-		
+				
 		archives.setMaxWidth(300);
+		archives.setLayoutX(10);
+		archives.setLayoutY(10);
 		
 		table = new Pane();
 		table.setMinSize(300, 200);
@@ -77,50 +80,87 @@ public class Interfaz extends Application{
 		searchResults = new ListView<>();
 		
 		// TextField con el que se busca la palabra
-
 		TextField searchField = new TextField();
-		searchField.setPromptText("Buscar");
-		search.getChildren().add(searchField);
-
+		searchField.setPromptText("Search for a word");
+		searchField.setLayoutX(600);
+		searchField.setLayoutY(13);
 		
 		//----------------------------- Buttons --------------------------------------
-		Image addImage= new Image(getClass().getResource("addD.jpeg").toExternalForm());
-		Button addFileButton = new Button();
-		addFileButton.setGraphic(new ImageView(addImage));
+		
+		String designButton= "-fx-background-color: \r\n" + 
+				"        #c3c4c4,\r\n" + 
+				"        linear-gradient(#d6d6d6 50%, white 100%),\r\n" + 
+				"        radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230,230,230,0) 50%);\r\n" + 
+				"    -fx-background-radius: 30;\r\n" + 
+				"    -fx-background-insets: 0,1,1;\r\n" + 
+				"    -fx-text-fill: black;\r\n" + 
+				"    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );";
+		
+		//Disenno del boton de agregar archivos
+		Image addFi= new Image(getClass().getResource("add1.png").toExternalForm());
+		ImageView img1= new ImageView(addFi);
+		img1.setFitHeight(20);
+		img1.setFitWidth(20);
+		Button addFileButton = new Button("Add File", img1);		
+		addFileButton.setStyle(designButton);
 		
 		addFileButton.setOnAction(e -> {
-			
 			this.fileManager.addAFile(this.archives);
 			
 		});
+		addFileButton.setLayoutX(20);
+		addFileButton.setLayoutY(30);
 		
-		search.getChildren().add(addFileButton);
-		
-		Button addFolderButton = new Button("Add New Folder");
+		//Disenno del boton de agregar folder
+		Image addFo= new Image(getClass().getResource("add2.png").toExternalForm());
+		ImageView img2= new ImageView(addFo);
+		img2.setFitHeight(20);
+		img2.setFitWidth(20);
+		Button addFolderButton = new Button("Add Folder", img2);
 		addFolderButton.setOnAction(e -> {
 			
 			this.fileManager.addFolder(archives);
 			
 		});
+		addFolderButton.setLayoutX(170);
+		addFolderButton.setLayoutY(30);
+		addFolderButton.setStyle(designButton);
 		
-		search.getChildren().add(addFolderButton);
 		
-		Button deleteFileButton = new Button("Delete files");
+		//Disenno del boton de borrar archivos
+		Image delete= new Image(getClass().getResource("add3.png").toExternalForm());
+		ImageView img3= new ImageView(delete);
+		img3.setFitHeight(20);
+		img3.setFitWidth(20);
+		Button deleteFileButton = new Button("Delete file", img3);
 		deleteFileButton.setOnAction(e -> {
 			
 			this.fileManager.deleteFile(archives);
 			
 		});
+		deleteFileButton.setLayoutX(340);
+		deleteFileButton.setLayoutY(30);
+		deleteFileButton.setStyle(designButton);
 		
-		search.getChildren().add(deleteFileButton);
-		
-		Button viewDate = new Button("View Date");
+		//propiedades del archivo
+		Button viewDate = new Button("View Properties");
 		viewDate.setOnAction(e -> {
-			fileManager.getProperties(this.archives.getSelectionModel().getSelectedItems());
+			Properties ele= new Properties();
+			//fileManager.getProperties(this.archives.getSelectionModel().getSelectedItems());
+			ele.SeeProperties(this.archives.getSelectionModel().getSelectedItems());
 		});
-		search.getChildren().add(viewDate);
+		viewDate.setLayoutX(650);
+		viewDate.setLayoutY(70);
+		viewDate.setStyle(designButton);
 		
-		Button searchButton = new Button("Search");
+		
+		//Boton de buscar elementos
+		Image searchF= new Image(getClass().getResource("4.png").toExternalForm());
+		ImageView img4= new ImageView(searchF);
+		img4.setFitHeight(20);
+		img4.setFitWidth(20);
+		Button searchButton = new Button();
+		searchButton.setGraphic(img4);
 		searchButton.setOnAction(e -> {
 			try {
 				
@@ -143,33 +183,44 @@ public class Interfaz extends Application{
 			}
 		});
 		
+		searchButton.setStyle(designButton);
+		searchButton.setLayoutX(780);
+		searchButton.setLayoutY(10);
 		//---------------------- ChechBox de las opciones de ordenamiento-----------------------------
 		
 		ChoiceBox<String> ordenar= new ChoiceBox<> ();
 		ordenar.getItems().addAll("Nombre", "Fecha", "Tamaño"); //Se inserta las opciones de la choiceBox
 		ordenar.setValue("Nombre");
+		ordenar.setStyle(designButton);
+		ordenar.setLayoutX(600);
+		ordenar.setLayoutY(15);
 		
 		ordenamiento= new Algoritmos(); //Se inicializa el atributo de la clase
 		Button revChoice= new Button("Ordenar");
+		revChoice.setLayoutX(615);
+		revChoice.setLayoutY(50);
 		
 		revChoice.setOnAction(e -> {
 				ordenamiento.ordenar(ordenar, ocurrenceSearchList, searchResults);
 				makeResultList();
 				}
-				);	
+				);
+		revChoice.setStyle(designButton);
 				
-		search.getChildren().add(searchButton);
-		
-		
+		first.getChildren().addAll(addFileButton, addFolderButton, deleteFileButton, viewDate, searchField, searchButton);
+		first.setStyle("-fx-background-color: linear-gradient(from 10% 10% to 100% 100%, #746A9B, #B9BDF0);");
 		
 		// ---------------- Se annaden los elementos para mostrarlos en pantalla ---------------------
 		
 		table.getChildren().add(searchResults);
-		
+		table.setLayoutX(300);
+		table.setLayoutY(10);
 		archivesContainer.getChildren().add(archives);
 		archivesContainer.getChildren().addAll(table, ordenar, revChoice);
+		archivesContainer.setStyle("-fx-background-color: #EAE3EA");
+		archivesContainer.setMinSize(900, 500);
 		
-		root.getChildren().addAll(search, archivesContainer);
+		root.getChildren().addAll(first, archivesContainer);
 		
 		scene = new Scene(root, 900,600);
 		

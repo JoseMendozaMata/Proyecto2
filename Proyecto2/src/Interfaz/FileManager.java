@@ -6,10 +6,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.pdfbox.contentstream.operator.state.SetGraphicsStateParameters;
+
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
 import Logica.lista.Lista;
 import Logica.lista.ListaNode;
@@ -62,12 +76,31 @@ public class FileManager {
 				
 				System.out.println(extension);
 				
-				//Validaci�n de extensi�n
+				//Validacion de extensi�n
 				if(extension.equals(".docx") || extension.equals(".pdf") || extension.equals(".txt")) {
 					
-					//A�adir la vara en la lista de forma visual
+					//Annadir la vara en la lista de forma visual
 					archives.getItems().add(file.getPath());
-					//A�adir la vara al arbol
+					
+					//Para agregar imagenes en la listView con los documentos cargados
+					archives.setCellFactory(param -> new ListCell<String>() {
+			            
+			            public void updateItem(String friend, boolean empty) {
+			                super.updateItem(friend, empty);
+			                Image addFi= new Image(getClass().getResource("doc.png").toExternalForm());
+			        		ImageView img1= new ImageView(addFi);
+			        		img1.setFitHeight(40);
+			        		img1.setFitWidth(40);
+			                if (empty) {
+			                    setText(null);
+			                    setGraphic(null);
+			                } else {
+			                    setGraphic(img1);
+			                    setText(friend);
+			                }
+			            }
+			                   
+			        });
 					
 					
 				} else {
@@ -96,9 +129,28 @@ public class FileManager {
 		File folder = dc.showDialog(null);
 		
 		if(folder == null) {
-			System.out.println("No seleccion� un folder para cargar");
+			System.out.println("No selecciono un folder para cargar");
 		} else {
 			archives.getItems().add(folder.getPath());
+			
+			//Para agregar imagenes en la listView con los documentos cargados
+			archives.setCellFactory(param -> new ListCell<String>() {
+	            public void updateItem(String friend, boolean empty) {
+	                super.updateItem(friend, empty);
+	                Image addFo= new Image(getClass().getResource("doc.png").toExternalForm());
+	        		ImageView img2= new ImageView(addFo);
+	        		img2.setFitHeight(40);
+	        		img2.setFitWidth(40);
+	                if (empty) {
+	                    setText(null);
+	                    setGraphic(null);
+	                } else {
+	                    setGraphic(img2);
+	                    setText(friend);
+	                }
+	            }
+	        });
+			
 		}
 		
 	}
@@ -114,6 +166,7 @@ public class FileManager {
 		
 	}
 	
+	
 	/**
 	 * Obtiene el nombre, fecha y tamanno del archivo
 	 * @param files: Archivos a los cuales quiero ver sus propiedades
@@ -124,20 +177,16 @@ public class FileManager {
 			
 			File f = new File(files.get(i));
 			long lastModified = f.lastModified(); 
-			System.out.println(lastModified);
 			
 			String pattern = "yyyy-MM-dd";
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 			
 			String name = f.getName();
-			System.out.println("The name is: " + name);
 			
 			Date lastModifiedDate = new Date( lastModified );
 
-			System.out.println( "The file " + f + " was last modified on " + simpleDateFormat.format( lastModifiedDate ) );
 			
 			float lenght = f.length();	//Longitud en bytes del archivo
-			System.out.println( "The file " + f + " have " + lenght + " bytes " );
 			
 		}
 		
@@ -231,7 +280,12 @@ public class FileManager {
 		
 		TreeNode nodeW= this.tree.getNode(word);	// Obtengo el nodo de la palabra buscada
 		if(nodeW==null) {
-			//Crear la pantallita 
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Error en la búsqueda");
+			alert.setContentText("Ooops, la palabra buscada no existe en los documentos!");
+
+			alert.showAndWait();
 			System.out.println("No se encontro la palabra");
 			return null;
 		}else {
