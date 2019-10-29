@@ -70,11 +70,19 @@ public class Properties {
 			stage.showAndWait();
 		}
 	
+	public String getPP(ObservableList<String> files, String show) {
+		
+		
+		return show;
+	}
 	public String getProperties(ObservableList<String> files, String show) {
 			
 			for(int i = 0; i < files.size(); i++) {
 				
-				File f = new File(files.get(i));
+				String text= files.get(i).split("\n")[0];
+				
+				File f = new File(text);
+				
 				long lastModified = f.lastModified(); 
 				System.out.println(lastModified);
 				
@@ -82,11 +90,10 @@ public class Properties {
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 				
 				String name = f.getName();
-				System.out.println("The name is: " + name);
 				
 				Date lastModifiedDate = new Date( lastModified );
-	
-				System.out.println( "The file " + f + " was last modified on " + simpleDateFormat.format( lastModifiedDate ) );
+				System.out.println(text);
+				
 				
 				float lenght = f.length();	//Longitud en bytes del archivo
 				

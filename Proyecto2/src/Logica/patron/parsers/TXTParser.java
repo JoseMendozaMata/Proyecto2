@@ -11,6 +11,8 @@ import java.io.FileReader;
  */
 public class TXTParser implements FileParser {
 
+	
+	private String[] lines;
 	/**
 	 * Obtiene el contenido del txt en forma de string
 	 */
@@ -44,9 +46,13 @@ public class TXTParser implements FileParser {
 	public String[] getLines(String url) {
 		
 		String text = getText(url);
-		String[] lines = text.split("\n");
+		lines = text.split("\n");
 		
 		return lines;
+	}
+	
+	public String getLine(int n) {
+	    return lines[n];
 	}
 
 }

@@ -52,8 +52,6 @@ public class FileManager {
 		
 		FileChooser fc = new FileChooser();	// Cuadro de dialogo para abrir los archivos
 		
-		System.out.println(archives);
-
 		
 		// Lista que contenera los diferentes archivos que quiera cargar
 		List<File> selectedFile = fc.showOpenMultipleDialog(null);
@@ -76,7 +74,7 @@ public class FileManager {
 				
 				System.out.println(extension);
 				
-				//Validacion de extensi�n
+				//Validacion de extension
 				if(extension.equals(".docx") || extension.equals(".pdf") || extension.equals(".txt")) {
 					
 					//Annadir la vara en la lista de forma visual

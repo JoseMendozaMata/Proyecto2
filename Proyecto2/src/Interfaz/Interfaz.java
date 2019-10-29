@@ -5,14 +5,19 @@ import java.io.IOException;
 import org.apache.pdfbox.pdfparser.PDFParser;
 
 import Logica.lista.Lista;
+import Logica.patron.parsers.DOCXManager;
+import Logica.patron.parsers.PDFManager;
+import Logica.patron.parsers.TXTParser;
 import Logica.tree.TreeNode;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -142,16 +147,42 @@ public class Interfaz extends Application{
 		deleteFileButton.setLayoutY(30);
 		deleteFileButton.setStyle(designButton);
 		
-		//propiedades del archivo
+		//boton de las propiedades del archivo
 		Button viewDate = new Button("View Properties");
 		viewDate.setOnAction(e -> {
 			Properties ele= new Properties();
-			//fileManager.getProperties(this.archives.getSelectionModel().getSelectedItems());
 			ele.SeeProperties(this.archives.getSelectionModel().getSelectedItems());
 		});
 		viewDate.setLayoutX(650);
 		viewDate.setLayoutY(70);
 		viewDate.setStyle(designButton);
+		
+		//Boton para mostrar el archivo
+		ShowDocs read= new ShowDocs();
+		
+		Button showText= new Button("Show Text");
+		showText.setOnAction(e -> {
+			Properties prop= new Properties();
+			try {
+				int lastIndexOf = prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path").lastIndexOf(".");
+				String extension = prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path").substring(lastIndexOf);
+				read.showText(prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path")
+						, extension);
+			} catch (Exception e1) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Error en la selección");
+				alert.setContentText("Ooops, no se ha selecionado un documento para leer! "
+						+ "\n"
+						+ "\n"
+						+ "Por favor seleccione un documento!");
+
+				alert.showAndWait();
+			}
+		});
+		showText.setLayoutX(600);
+		showText.setLayoutY(100);
+		showText.setStyle(designButton);
 		
 		
 		//Boton de buscar elementos
@@ -203,8 +234,8 @@ public class Interfaz extends Application{
 		revChoice.setOnAction(e -> {
 				ordenamiento.ordenar(ordenar, ocurrenceSearchList, searchResults);
 				makeResultList();
-				}
-				);
+				});
+		
 		revChoice.setStyle(designButton);
 				
 		first.getChildren().addAll(addFileButton, addFolderButton, deleteFileButton, viewDate, searchField, searchButton);
@@ -216,7 +247,7 @@ public class Interfaz extends Application{
 		table.setLayoutX(300);
 		table.setLayoutY(10);
 		archivesContainer.getChildren().add(archives);
-		archivesContainer.getChildren().addAll(table, ordenar, revChoice);
+		archivesContainer.getChildren().addAll(table, ordenar, revChoice, showText);
 		archivesContainer.setStyle("-fx-background-color: #EAE3EA");
 		archivesContainer.setMinSize(900, 500);
 		
@@ -235,7 +266,6 @@ public class Interfaz extends Application{
 	public void makeResultList() {
 		
 		if(this.searchResults.getItems().isEmpty()) {
-			
 			System.out.println("esta vacia");
 			
 		}else {
@@ -246,17 +276,45 @@ public class Interfaz extends Application{
 			System.out.println("-------------------------------------------");
 			for(int i = 0; i < ocurrenceSearchList.size; i++) {
 
-				System.out.println(ocurrenceSearchList.getIndex(i).getName());
-				searchResults.getItems().add(ocurrenceSearchList.getIndex(i).getName());
+				searchResults.getItems().add(ocurrenceSearchList.getIndex(i).getUrl()
+						+ "\n"
+						+ "\n"
+						+ getLine(ocurrenceSearchList.getIndex(i).getUrl(), 
+								ocurrenceSearchList.getIndex(i).getLine()));
 
 			}
 		
 	}
 	
-	public void ButtonDesign() {
-		
-	}
 	
+	/**
+	 * Metodo que obtiene el texto de la linea donde se encuentra
+	 * la palabra 
+	 * 
+	 * @param url: la direccion del archivo
+	 * @param line: la linea en donde se encuentra
+	 * @return el texto de la linea donde se encuentra la palabra
+	 */
+	public String getLine(String url, int line) {
+		
+		int lastIndexOf = url.lastIndexOf(".");
+		String extension = url.substring(lastIndexOf);
+		String text= "No sé";
+		if(extension.equals(".docx")) {
+			DOCXManager man= new DOCXManager();
+			man.getLines(url);
+			text= man.getLine(line);
+		}else if(extension.equals(".txt")) {
+			TXTParser man= new TXTParser();
+			man.getLines(url);
+			text= man.getLine(line);
+		}else if(extension.equals(".pdf")) {
+			PDFManager man= new PDFManager();
+			man.getLines(url);
+			text= man.getLine(line);
+		}
+		return text;
+	}
 }
 	
 

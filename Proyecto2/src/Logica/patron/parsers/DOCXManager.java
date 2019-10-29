@@ -12,6 +12,7 @@ public class DOCXManager implements FileParser{
 
 	private XWPFDocument docx;
 	private XWPFWordExtractor we;
+	private String lineas[];
 	
 	@Override
 	public String getText(String url) {
@@ -33,10 +34,13 @@ public class DOCXManager implements FileParser{
 	@Override
 	public String[] getLines(String url) {
 		String txt= getText(url);
-		String[] lineas;
 		lineas= txt.split(System.getProperty("line.separator"));
 		
 		return lineas;
+	}
+	
+	public String getLine(int n) {
+	    return lineas[n];
 	}
 
 	
