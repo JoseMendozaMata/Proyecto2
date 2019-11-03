@@ -124,34 +124,41 @@ public class FileManager {
 		//Para seleccionar un directorio a cargar al programa
 		DirectoryChooser dc = new DirectoryChooser();
 		
+		// Para obtener carpeta seleccionada
 		File folder = dc.showDialog(null);
 		
-		if(folder == null) {
+		if(folder == null) {	// No selecciona el folder
+			
 			System.out.println("No selecciono un folder para cargar");
+		
 		} else {
-			archives.getItems().add(folder.getPath());
 			
-			//Para agregar imagenes en la listView con los documentos cargados
-			archives.setCellFactory(param -> new ListCell<String>() {
-	            public void updateItem(String friend, boolean empty) {
-	                super.updateItem(friend, empty);
-	                Image addFo= new Image(getClass().getResource("doc.png").toExternalForm());
-	        		ImageView img2= new ImageView(addFo);
-	        		img2.setFitHeight(40);
-	        		img2.setFitWidth(40);
-	                if (empty) {
-	                    setText(null);
-	                    setGraphic(null);
-	                } else {
-	                    setGraphic(img2);
-	                    setText(friend);
-	                }
-	            }
-	        });
+			String[] files = folder.list();	// hago una lista con los documentos
 			
+			for(int i = 1; i < files.length; i++) {	// Recorro con un for para cargar todas los documentos
+				
+				
+				String file = folder + "/"  + files[i];	// Obtengo el url del documento
+				
+				File validation = new File(file);
+				
+				System.out.println(file);
+				
+				if(validation.isFile()) {
+					
+					archives.getItems().add(file);
+				
+				}else {
+					System.out.println("No es documento");
+				}
+				
+			}
+
 		}
 		
 	}
+	
+	
 	
 	/**
 	 * Elimina elementos de la lista observable
@@ -226,13 +233,13 @@ public class FileManager {
 						System.out.println("Anade un elemento al arbol");
 						tree.Insert(word);
 						TreeNode node = tree.getNode(word);
-						node.lista.add_Last(url, i);
+						node.lista.add_Last(url, i, j);
 						
 					//La palabra existe en el arbol, se agrega la ocurrencia
 					}else {
 						TreeNode node= tree.getNode(word);
 
-						node.lista.add_Last(url, i);
+						node.lista.add_Last(url, i, j);
 						System.out.println("Se agrega el nodo a la lista de ocurrencias");
 					}
 				}
@@ -274,9 +281,10 @@ public class FileManager {
 	
 	public TreeNode search(String word, ObservableList<String> ListaArchivos) throws IOException {
 		
+		String[] listWord= word.split(" ");
 		parse(ListaArchivos); //Se crea el arbol
 		
-		TreeNode nodeW= this.tree.getNode(word);	// Obtengo el nodo de la palabra buscada
+		TreeNode nodeW= this.tree.getNode(listWord[0]);	// Obtengo el nodo de la palabra buscada
 		if(nodeW==null) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");

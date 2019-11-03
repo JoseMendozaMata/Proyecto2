@@ -1,5 +1,6 @@
 package Interfaz;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -14,6 +15,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
@@ -23,7 +26,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 
@@ -37,6 +43,7 @@ public class Interfaz extends Application{
 	Scene scene;
 	VBox root;
 	
+	
 	Pane archivesContainer;
 	ListView<String> archives;		// Biblioteca de la interfaz
 	ListView<String> searchResults;
@@ -45,6 +52,9 @@ public class Interfaz extends Application{
 	Lista ocurrenceSearchList;
 	Algoritmos ordenamiento;
 	Pane first;
+	TextField searchField;
+	
+	public int variable;
 	
 	public static void main(String[]args) {
 		
@@ -85,7 +95,7 @@ public class Interfaz extends Application{
 		searchResults = new ListView<>();
 		
 		// TextField con el que se busca la palabra
-		TextField searchField = new TextField();
+		searchField = new TextField();
 		searchField.setPromptText("Search for a word");
 		searchField.setLayoutX(600);
 		searchField.setLayoutY(13);
@@ -141,7 +151,6 @@ public class Interfaz extends Application{
 		deleteFileButton.setOnAction(e -> {
 			
 			this.fileManager.deleteFile(archives);
-			
 		});
 		deleteFileButton.setLayoutX(340);
 		deleteFileButton.setLayoutY(30);
@@ -151,7 +160,7 @@ public class Interfaz extends Application{
 		Button viewDate = new Button("View Properties");
 		viewDate.setOnAction(e -> {
 			Properties ele= new Properties();
-			ele.SeeProperties(this.archives.getSelectionModel().getSelectedItems());
+			ele.SeeProperties(this.searchResults.getSelectionModel().getSelectedItems());
 		});
 		viewDate.setLayoutX(650);
 		viewDate.setLayoutY(70);
@@ -167,7 +176,7 @@ public class Interfaz extends Application{
 				int lastIndexOf = prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path").lastIndexOf(".");
 				String extension = prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path").substring(lastIndexOf);
 				read.showText(prop.getProperties(this.searchResults.getSelectionModel().getSelectedItems(), "path")
-						, extension);
+						, extension, searchField.getText());
 			} catch (Exception e1) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
@@ -196,7 +205,7 @@ public class Interfaz extends Application{
 			try {
 				
 				TreeNode result = fileManager.search(searchField.getText(),this.archives.getItems());
-				
+				ocurrenceSearchList= new Lista();
 				if(result == null) {	// Si la palabra no existe 
 					
 					System.out.println("La palabra no existe");
@@ -205,7 +214,8 @@ public class Interfaz extends Application{
 					
 				} else {	// Si la palabra existe, obtengo las ocurrencias y las pongo en una lista
 					
-					this.ocurrenceSearchList = result.lista;
+					look(result);					
+					
 					makeResultList();
 				}
 				
@@ -261,6 +271,53 @@ public class Interfaz extends Application{
 	}
 	
 	/**
+	 * Metodo que permite buscar la palabra que se está buscando en los documentos cargados
+	 * @param result: es el nodo del arbol
+	 */
+	public void look(TreeNode result) {
+		Lista ocurrencias= result.lista;
+		for(int i=0; i < ocurrencias.size; i++) {
+			FileManager litFileManager= new FileManager();
+			String line= litFileManager.getExtract(ocurrencias.getIndex(i));
+			String[] partsLine= line.split(" ");
+			String[] partsSearch= searchField.getText().split(" ");
+			
+			if(partsSearch.length==1) {
+				ocurrenceSearchList.add_Last(result.lista.getIndex(i).getUrl(), 
+						result.lista.getIndex(i).getLine(), 
+						result.lista.getIndex(i).getPosLine());
+			}else{
+				for(int j=0; j< partsLine.length; j++) {
+					if(partsLine[j].equals(partsSearch[0])) {
+						if(IsEqual(partsLine, partsSearch, j)) {
+							ocurrenceSearchList.add_Last(result.lista.getIndex(i).getUrl(), 
+									result.lista.getIndex(i).getLine(), 
+									result.lista.getIndex(i).getPosLine());
+							j=900;
+						}
+					}
+				}
+			}
+		}	
+	}
+	
+	public boolean IsEqual(String[] partsLine, String[] partsSearch, int posLine) {
+		boolean response=true;
+		for(int i=0; i<partsSearch.length; i++) {
+			while(response && i<partsSearch.length) {
+				if(partsSearch[i].equals(partsLine[posLine])) {
+					posLine++;
+					i++;
+				}else {
+					response= false;
+				}
+			}
+		}
+		
+		return response;
+	}
+	
+	/**
 	 * Se encarga de annadir los files en la lista de resultados de busqueda 
 	 */
 	public void makeResultList() {
@@ -275,14 +332,39 @@ public class Interfaz extends Application{
 		}
 			System.out.println("-------------------------------------------");
 			for(int i = 0; i < ocurrenceSearchList.size; i++) {
-
-				searchResults.getItems().add(ocurrenceSearchList.getIndex(i).getUrl()
-						+ "\n"
-						+ "\n"
-						+ getLine(ocurrenceSearchList.getIndex(i).getUrl(), 
-								ocurrenceSearchList.getIndex(i).getLine()));
-
+				System.out.println("el size de la lista de ocurrencias "+ocurrenceSearchList.size);
+				File file= new File(ocurrenceSearchList.getIndex(i).getUrl());
+				
+				searchResults.getItems().add(file.getPath());
+				
+				variable= i;
+				
+				
+				//Para agregar imagenes en la listView con los documentos cargados
+				searchResults.setCellFactory(param -> new ListCell<String>() {
+					
+					public void updateItem(String friend, boolean empty) {
+						
+						super.updateItem(friend, empty);
+						
+						System.out.println("La variable es: "+variable+ "\n Friend es "+ friend);
+						
+		                if (empty) {
+		                    setText(null);
+		                    setGraphic(null);
+		                } else {
+		                	if(friend!=null) {
+		                		TextFlow text= UnderLine(ocurrenceSearchList.getIndex(variable).getUrl(),
+										ocurrenceSearchList.getIndex(variable).getLine());
+		                		setText(friend);
+			                    setGraphic(text);
+		                	}
+		                    
+		                }
+		            }
+		        }); 
 			}
+			
 		
 	}
 	
@@ -312,9 +394,101 @@ public class Interfaz extends Application{
 			PDFManager man= new PDFManager();
 			man.getLines(url);
 			text= man.getLine(line);
+			
 		}
 		return text;
 	}
+	
+	public TextFlow UnderLine(String url, int line) {
+		String text= getLine(url, line);
+
+		String[] partition= text.split(" ");
+
+		//Los elementos para agregar al texto
+		TextFlow textFlow;
+		String[] searchResult= searchField.getText().split(" ");
+		
+		if(partition[0].equals(searchResult[0])) {
+			textFlow= FirstPosition(searchResult, partition);
+		}else {
+			textFlow= HalfPosition(searchResult, partition);
+		}
+		return textFlow;
+	}
+	
+	/**
+	 * @param lenght: es el lenght de la palabra que se está buscando
+	 * @param searchResult
+	 * @param line
+	 */
+	public TextFlow FirstPosition(String[] searchResult, String[] line) {
+		Text text1;
+		String str1="";
+		Text text2;
+		String str2="";
+		TextFlow textFlow;
+		for(int i=0; i< searchResult.length; i++) {
+			if(line[i].equals(searchResult[i])) {
+				str1+= line[i] + " ";
+			}else {
+				while(i < line.length) {
+					str2 += " "+line[i];
+					i++;
+				}
+			}
+		}
+		text1= new Text(str1);
+		text1.setFill(Color.LIGHTCORAL);
+		text1.setUnderline(true);
+		
+		text2= new Text(str2);
+		textFlow= new TextFlow(text1, text2);
+		
+		return textFlow;
+	}
+	
+	public TextFlow HalfPosition(String[] searchResult, String[] line) {
+		Text text1;
+		String str1="";
+		Text text2;
+		String str2="";
+		Text text3;
+		String str3= "";
+		TextFlow textFlow;
+		
+		for(int i=0; i< line.length; i++) {
+			
+			//mientras que no se haya encontrado donde aparece el resultado
+			while(!line[i].equals(searchResult[0])) {
+				str1+= line[i]+ " ";
+				i++;
+			}
+			text1= new Text(str1);
+			
+			//Ya se encontro el resultado y se va a recorrer
+			for(int j=0; j< searchResult.length; j++) {
+				str2+= searchResult[j] + " ";
+				i++;
+			}
+			text2= new Text(str2);
+			text2.setFill(Color.LIGHTCORAL);
+			text2.setUnderline(true);
+			try{
+				while(i< line.length) {
+					str3+= line[i]+ " ";
+					i++;
+				}
+				text3= new Text(str3);
+				textFlow= new TextFlow(text1, text2, text3);
+				return textFlow;
+			}catch(Exception e) {
+				textFlow= new TextFlow(text1, text2);
+				return textFlow;
+			}
+		}
+		return null;
+	}
+	
 }
 	
 

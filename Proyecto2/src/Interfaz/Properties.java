@@ -70,11 +70,7 @@ public class Properties {
 			stage.showAndWait();
 		}
 	
-	public String getPP(ObservableList<String> files, String show) {
-		
-		
-		return show;
-	}
+
 	public String getProperties(ObservableList<String> files, String show) {
 			
 			for(int i = 0; i < files.size(); i++) {

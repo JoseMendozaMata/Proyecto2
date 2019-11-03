@@ -1,18 +1,34 @@
 package Interfaz;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTShd;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STShd;
 
+import Logica.patron.factory.ParserFactory;
+import Logica.patron.parsers.DOCXManager;
+import Logica.patron.parsers.FileParser;
+import Logica.patron.parsers.ParserId;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,10 +48,52 @@ public class ShowDocs {
     PDFParser parser;
     String parsedText;
     
+    public ParserFactory parserfactory;
+    public ParserId parserId;
+    public FileParser fileParser;
+        
 	private BufferedReader br;
 	
-	public void showText(String url, String word) throws Exception {
+	public ParserId gettingT(String id) {
+
 		
+		// Convierto la extension a un ParserId
+		if(id.equals(".txt")) {
+			parserId = ParserId.TXT;
+		}else if(id.equals(".pdf")) {
+			parserId = ParserId.PDF;
+		}else if(id.equals(".docx")) {
+			parserId = ParserId.DOCX;
+		}else {
+			return null;
+		}
+		return parserId;
+	}
+	
+	public void showText(String url, String word, String searchWord) throws Exception {
+		
+		
+		parserfactory= new ParserFactory();
+		
+		if(word.equals(".docx")) {
+			File file= new File(url);
+			
+			Desktop.getDesktop().open(file);
+
+			
+		}else if(word.equals(".pdf")) {
+			
+			File file= new File(url);
+			Desktop.getDesktop().open(file);
+			
+			
+		}else if(word.equals(".txt")) {
+			File file= new File(url);
+			Desktop.getDesktop().open(file);
+		}
+	}
+	
+	public void ShowTextAux(String url, String word, String searchWord) {
 		Stage stage= new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
 		ScrollPane rootScroll= new ScrollPane();
@@ -44,19 +102,9 @@ public class ShowDocs {
 		
 		Label label= new Label("No hay texto definido");
 		
-		//int line2= Integer.parseInt(line);
 		
+		parserfactory= new ParserFactory();
 		
-		
-		
-		if(word.equals(".docx")) {
-			label.setText(getDocx(url));
-		}else if(word.equals(".pdf")) {
-			label.setText(getPdf(url));
-			
-		}else if(word.equals(".txt")) {
-			label.setText(getTxt(url));
-		}
 		label.setLayoutX(20);
 		label.setLayoutY(20);
 		
@@ -78,7 +126,7 @@ public class ShowDocs {
 		rootScroll.setPrefSize(800, 450);
 		root.setPrefSize(1900, 1200);
 		
-		rootScroll.setContent(root);
+		rootScroll.setContent(label);
 		root.getChildren().addAll();
 		root.setStyle("-fx-background-color: #FFFFFF");
 		
@@ -87,62 +135,14 @@ public class ShowDocs {
 		stage.showAndWait();
 	}
 	
-	public String getDocx(String url) {
-
-		String text = "";
-		
-		try {
-			docx = new XWPFDocument(new FileInputStream(url));
-			we = new XWPFWordExtractor(docx);
-			text = we.getText();
-			
-		}catch(Exception e){
-			System.out.println("Error: " + e);
-		}
-		
-		return text;
-	}
 	
-	public String getPdf(String url) throws Exception{
-        file = new File(url);
-        parser = new PDFParser((RandomAccessRead) new FileInputStream(file));
-        
-        parser.parse();
-        try (COSDocument cosDoc = parser.getDocument()) {
-            pdfStripper = new PDFTextStripper();
-            pdDoc = new PDDocument(cosDoc);
-            pdfStripper.setStartPage(1);
-            pdfStripper.setEndPage(5);
-            parsedText = pdfStripper.getText(pdDoc);
-        }
-        
-        return parsedText;
- 
+	public static XWPFRun createRun(XWPFParagraph paragraph){
+	    XWPFRun run = paragraph.createRun();
+	    run.setFontSize(12);
+	    run.setFontFamily("Times New Roman");
+	    return run;
 	}
 
-	public String getTxt(String url) {
-		
-		String text = "";		// Donde se guardara el texto
-		
-		try {	// Intenta abrir el archivo para saber si existe
-			
-			File archivo = new File (url);
-			FileReader fr = new FileReader (archivo);
-			br = new BufferedReader(fr);
-			
-			String linea;
-			
-			// Para obtener el contenido en lineas del txt
-			while((linea = br.readLine()) != null) {
-				text += linea + "\n";
-			}
-		
-		} catch (Exception e) {				// Cuando no puede abrir el archivo
-			text = null;
-			System.out.println("No existe el archivo");
-		}
-		
-		return text;
-	}
+	
 
 }

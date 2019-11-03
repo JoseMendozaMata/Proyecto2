@@ -38,34 +38,34 @@ public class RadixList {
 		switch(element) {
 		
 		case 0:
-			this.list0.add_Last(node.getUrl(), node.getLine());
+			this.list0.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 1:
-			this.list1.add_Last(node.getUrl(), node.getLine());
+			this.list1.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 2:
-			this.list2.add_Last(node.getUrl(), node.getLine());
+			this.list2.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 3:
-			this.list3.add_Last(node.getUrl(), node.getLine());
+			this.list3.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 4:
-			this.list4.add_Last(node.getUrl(), node.getLine());
+			this.list4.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 5:
-			this.list5.add_Last(node.getUrl(), node.getLine());
+			this.list5.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 6:
-			this.list6.add_Last(node.getUrl(), node.getLine());
+			this.list6.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 7:
-			this.list7.add_Last(node.getUrl(), node.getLine());
+			this.list7.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 8:
-			this.list8.add_Last(node.getUrl(), node.getLine());
+			this.list8.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 		case 9:
-			this.list9.add_Last(node.getUrl(), node.getLine());
+			this.list9.add_Last(node.getUrl(), node.getLine(), node.getPosLine());
 			break;
 			
 		}

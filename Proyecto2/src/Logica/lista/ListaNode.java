@@ -9,12 +9,14 @@ import java.io.File;
  */
 public class ListaNode {
 	private int line;
+	private int posline;
 	private String url;
 	public ListaNode next;
 	public ListaNode prev;
 
-	public ListaNode(String url, int line) {
+	public ListaNode(String url, int line, int posline) {
 		this.line= line;
+		this.posline = posline;
 		this.url=url;
 		this.next=null;
 		this.prev=null;
@@ -26,6 +28,14 @@ public class ListaNode {
 
 	public void setLine(int line) {
 		this.line = line;
+	}
+	
+	public int getPosLine() {
+		return posline;
+	}
+
+	public void setPosLine(int posline) {
+		this.posline = posline;
 	}
 
 	public String getUrl() {

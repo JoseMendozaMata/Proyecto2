@@ -16,14 +16,14 @@ public class Lista {
 		this.size=0;
 	}
 	
-	public void add_Last(String url, int line) {
+	public void add_Last(String url, int line, int posline) {
 		if(this.first ==null) {
-			this.first= new ListaNode(url, line);
+			this.first= new ListaNode(url, line, posline);
 			this.last= this.first;
 			this.size++;
 			
 		} else {
-			ListaNode nuevo= new ListaNode(url, line);
+			ListaNode nuevo= new ListaNode(url, line, posline);
 			this.last.next= nuevo;
 			nuevo.prev= this.last;
 			this.last= nuevo;
